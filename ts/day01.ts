@@ -42,4 +42,4 @@ async function run (): Promise<void> {
     console.log(`day 02: ${totalFuel2}`);
 }
 
-run();
+export default run;
