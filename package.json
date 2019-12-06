@@ -1,0 +1,26 @@
+{
+    "name": "adventofcode-2019",
+    "version": "1.0.0",
+    "description": "Advent of Code 2019, TS + JS solutions, resurtm@gmail.com",
+    "main": "index.js",
+    "scripts": {},
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/resurtm/adventofcode-2019-ts-js.git"
+    },
+    "author": "resurtm@gmail.com",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/resurtm/adventofcode-2019-ts-js/issues"
+    },
+    "homepage": "https://github.com/resurtm/adventofcode-2019-ts-js#readme",
+    "dependencies": {
+        "ramda": "^0.26.1"
+    },
+    "devDependencies": {
+        "@types/node": "^12.12.14",
+        "@types/ramda": "^0.26.36",
+        "ts-node": "^8.5.4",
+        "typescript": "^3.7.3"
+    }
+}
