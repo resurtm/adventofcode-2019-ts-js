@@ -122,13 +122,13 @@ test('test 5678, 7', () => {
     expect(intCode5.output).toEqual([1001]);
 });
 
-// test('relative base, 1', () => {
-//     const code = [109, 1, 204, -1, 1001, 100, 1, 100, 1008, 100, 16, 101, 1006, 101, 0, 99];
-//
-//     const intCode1 = new IntCode(code, []);
-//     intCode1.run();
-//     expect(intCode1.output).toEqual([999]);
-// });
+test('relative base, 1', () => {
+    const code = [109, 1, 204, -1, 1001, 100, 1, 100, 1008, 100, 16, 101, 1006, 101, 0, 99];
+
+    const intCode1 = new IntCode(code, []);
+    intCode1.run();
+    expect(intCode1.output).toEqual([109, 1, 204, -1, 1001, 100, 1, 100, 1008, 100, 16, 101, 1006, 101, 0, 99]);
+});
 
 test('relative base, 2', () => {
     const code = [1102, 34915192, 34915192, 7, 4, 7, 99, 0];
