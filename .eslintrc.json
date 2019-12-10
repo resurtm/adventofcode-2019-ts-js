@@ -4,6 +4,9 @@
         "plugin:@typescript-eslint/recommended",
         "standard"
     ],
+    "env": {
+        "jest": true
+    },
     "plugins": [
         "@typescript-eslint"
     ],
