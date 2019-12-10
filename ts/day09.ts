@@ -12,6 +12,13 @@ enum OpType {
     Halt = 99,
 }
 
+const OpSize: { [key: string]: number } = {
+    [OpType.Add]: 4,
+    [OpType.Mult]: 4,
+    [OpType.Input]: 2,
+    [OpType.Output]: 2
+};
+
 enum ModeType {
     Position = 0,
     Immediate = 1,
@@ -24,13 +31,25 @@ interface Opcode {
 
 class Code {
     private code: number[];
+
     private opcode: Opcode;
     private pos: number;
 
-    constructor (code: number[]) {
+    private inputPos: number;
+    private input: number[];
+
+    public output: number[];
+
+    constructor (code: number[], input: number[] = []) {
         this.code = clone(code);
+
         this.opcode = { op: OpType.Nothing, modes: [] };
         this.pos = 0;
+
+        this.inputPos = 0;
+        this.input = input;
+
+        this.output = [];
     }
 
     parseOpcode (): void {
@@ -69,23 +88,28 @@ class Code {
             switch (this.opcode.op) {
             case OpType.Add:
                 this.setVal(2, this.getVal(0) + this.getVal(1));
-                this.pos += 4;
                 break;
 
             case OpType.Mult:
                 this.setVal(2, this.getVal(0) * this.getVal(1));
-                this.pos += 4;
                 break;
 
             case OpType.Input:
-                this.setVal(0, 1);
-                this.pos += 2;
+                if (this.input.length === 0) {
+                    throw new Error('Program waits for some input, input is empty');
+                }
+                this.setVal(0, this.input[this.inputPos]);
+                this.inputPos += 1;
+                this.inputPos %= this.input.length;
                 break;
 
             case OpType.Output:
-                console.log(this.getVal(0));
-                this.pos += 2;
+                this.output.push(this.getVal(0));
                 break;
+            }
+
+            if (this.opcode.op in OpSize) {
+                this.pos += OpSize[this.opcode.op];
             }
         }
     }
@@ -93,15 +117,17 @@ class Code {
 
 async function run (): Promise<void> {
     const readFile = promisify(readFileOriginal);
-    const rawData = await readFile(join(__dirname, '..', 'input', 'day05_3.txt'));
+    const rawData = await readFile(join(__dirname, '..', 'input', 'day05.txt'));
 
     const codeData = map(
         str => parseInt(str, 10),
         rawData.toString().trim().split(',')
     );
 
-    const code = new Code(codeData);
+    const code = new Code(codeData, [1]);
     code.run();
+
+    console.log(code.output);
 }
 
 export default run;
