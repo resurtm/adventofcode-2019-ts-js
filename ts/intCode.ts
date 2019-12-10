@@ -84,7 +84,7 @@ export class IntCode {
             newPos = this.pos + pos + 1;
             break;
         case ModeType.Relative:
-            newPos = this.code[this.pos + this.relativeBase + pos + 1];
+            newPos = this.relativeBase + this.code[this.pos + pos + 1];
             break;
         default:
             throw new Error('Invalid parameter mode');
@@ -103,7 +103,7 @@ export class IntCode {
             newPos = this.pos + pos + 1;
             break;
         case ModeType.Relative:
-            newPos = this.code[this.pos + this.relativeBase + pos + 1];
+            newPos = this.relativeBase + this.code[this.pos + pos + 1];
             break;
         default:
             throw new Error('Invalid parameter mode');
