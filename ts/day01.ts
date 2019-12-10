@@ -32,14 +32,14 @@ async function run (): Promise<void> {
         0,
         map(weight => calculateFuel(weight), weights)
     );
-    console.log(`day 01: ${totalFuel1}`);
+    console.log(`day 01, part 1: ${totalFuel1}`);
 
     const totalFuel2: number = reduce<number, number>(
         add,
         0,
         map(weight => calculateWithFuelWeight(weight), weights)
     );
-    console.log(`day 02: ${totalFuel2}`);
+    console.log(`day 01, part 2: ${totalFuel2}`);
 }
 
 export default run;

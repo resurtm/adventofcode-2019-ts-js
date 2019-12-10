@@ -13,9 +13,13 @@ async function run (): Promise<void> {
         rawData.toString().trim().split(',')
     );
 
-    const intCode = new IntCode(codeData, [1]);
-    intCode.run();
-    console.log(intCode.output);
+    const intCode1 = new IntCode(codeData, [1]);
+    intCode1.run();
+    console.log(`day 09, part 1: ${intCode1.output}`);
+
+    const intCode2 = new IntCode(codeData, [2]);
+    intCode2.run();
+    console.log(`day 09, part 2: ${intCode2.output}`);
 }
 
 export default run;
