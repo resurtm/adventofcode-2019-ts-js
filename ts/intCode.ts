@@ -1,5 +1,3 @@
-import { clone } from 'ramda';
-
 enum OpType {
     Nothing = -1,
     Add = 1,
@@ -10,6 +8,7 @@ enum OpType {
     JumpIfFalse = 6,
     LessThan = 7,
     Equals = 8,
+    Relative = 9,
     Halt = 99
 }
 
@@ -19,12 +18,14 @@ const OpSize: { [key: string]: number } = {
     [OpType.Input]: 2,
     [OpType.Output]: 2,
     [OpType.LessThan]: 4,
-    [OpType.Equals]: 4
+    [OpType.Equals]: 4,
+    [OpType.Relative]: 2
 };
 
 enum ModeType {
     Position = 0,
     Immediate = 1,
+    Relative = 2,
 }
 
 interface Opcode {
@@ -37,6 +38,7 @@ export class IntCode {
 
     private opcode: Opcode;
     private pos: number;
+    private relativeBase: number;
 
     private inputPos: number;
     private input: number[];
@@ -44,10 +46,11 @@ export class IntCode {
     public output: number[];
 
     constructor (code: number[], input: number[] = []) {
-        this.code = clone(code);
+        this.code = JSON.parse(JSON.stringify(code));
 
         this.opcode = { op: OpType.Nothing, modes: [] };
         this.pos = 0;
+        this.relativeBase = 0;
 
         this.inputPos = 0;
         this.input = input;
@@ -63,25 +66,50 @@ export class IntCode {
         };
     }
 
+    ensureCodeSize (pos: number): void {
+        if (pos >= this.code.length) {
+            while (this.code.length <= pos) {
+                this.code.push(0);
+            }
+        }
+    }
+
     getVal (pos: number): number {
+        let newPos;
         switch (this.opcode.modes[pos]) {
         case ModeType.Position:
-            return this.code[this.code[this.pos + pos + 1]];
+            newPos = this.code[this.pos + pos + 1];
+            break;
         case ModeType.Immediate:
-            return this.code[this.pos + pos + 1];
+            newPos = this.pos + pos + 1;
+            break;
+        case ModeType.Relative:
+            newPos = this.code[this.pos + this.relativeBase + pos + 1];
+            break;
+        default:
+            throw new Error('Invalid parameter mode');
         }
-        throw new Error('Invalid parameter mode');
+        this.ensureCodeSize(newPos);
+        return this.code[newPos];
     }
 
     setVal (pos: number, val: number): void {
+        let newPos;
         switch (this.opcode.modes[pos]) {
         case ModeType.Position:
-            this.code[this.code[this.pos + pos + 1]] = val;
+            newPos = this.code[this.pos + pos + 1];
             break;
         case ModeType.Immediate:
-            this.code[this.pos + pos + 1] = val;
+            newPos = this.pos + pos + 1;
             break;
+        case ModeType.Relative:
+            newPos = this.code[this.pos + this.relativeBase + pos + 1];
+            break;
+        default:
+            throw new Error('Invalid parameter mode');
         }
+        this.ensureCodeSize(newPos);
+        this.code[newPos] = val;
     }
 
     run (): void {
@@ -132,6 +160,10 @@ export class IntCode {
 
             case OpType.Equals:
                 this.setVal(2, this.getVal(0) === this.getVal(1) ? 1 : 0);
+                break;
+
+            case OpType.Relative:
+                this.relativeBase += this.getVal(0);
                 break;
             }
 

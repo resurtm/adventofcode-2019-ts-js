@@ -6,14 +6,14 @@ import { IntCode } from './intCode';
 
 async function run (): Promise<void> {
     const readFile = promisify(readFileOriginal);
-    const rawData = await readFile(join(__dirname, '..', 'input', 'day05.txt'));
+    const rawData = await readFile(join(__dirname, '..', 'input', 'day09.txt'));
 
     const codeData = map(
         str => parseInt(str, 10),
         rawData.toString().trim().split(',')
     );
 
-    const intCode = new IntCode(codeData, [5]);
+    const intCode = new IntCode(codeData, [1]);
     intCode.run();
     console.log(intCode.output);
 }
